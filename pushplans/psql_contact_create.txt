@@ -1,0 +1,11 @@
+CREATE EXTENSION citext;
+
+CREATE TABLE challenge(
+    id serial PRIMARY KEY,
+    channel citext UNIQUE NOT NULL,
+    state integer NOT NULL DEFAULT 0,
+    time integer NOT NULL DEFAULT 0,
+    challenger citext NOT NULL DEFAULT '',
+    challenged citext NOT NULL DEFAULT '',
+    ready citext NOT NULL DEFAULT '',
+);

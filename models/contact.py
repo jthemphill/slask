@@ -1,3 +1,4 @@
+import contextlib
 import time
 
 from core.citext import CIText
@@ -25,7 +26,7 @@ class Challenge(db.Model):
 
     def __init__(self, channel):
         self.channel = channel
-        self.finish()
+        self.reset()
 
 
     def reset(self):
@@ -91,22 +92,20 @@ class Challenge(db.Model):
         return challenge
 
 
-    class lock:
+    @staticmethod
+    @contextlib.contextmanager
+    def lock(channel):
         """Checkout the challenge for the given channel (for reading and writing)"""
-        def __init__(self, channel):
-            self.challenge = db.session.query(Challenge).filter_by(
-                channel=channel
-            ).with_lockmode('update').first()
+        challenge = db.session.query(Challenge).filter_by(
+            channel=channel
+        ).with_lockmode('update').first()
 
-            if not self.challenge:
-                challenge = Challenge(channel)
-                db.session.with_lockmode('update').add(challenge)
+        if not challenge:
+            challenge = Challenge(channel)
+            db.session.with_lockmode('update').add(challenge)
 
-        def __enter__(self):
-            return self.challenge
-
-        def __exit__(self, type, value, traceback):
-            db.session.commit()
+        yield challenge
+        db.session.commit()
 
 
     def __repr__(self):

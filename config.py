@@ -11,9 +11,6 @@ config = {
 def bool_config(name):
     return True if os.environ.get(name) == "True" else False
 
-# These should be Slack IDs
-CONTACT_CHANNELS = json.loads(os.environ.get("CONTACT_CHANNELS", "[]"))
-
 # JSON of the format:
 # '{"channel_name": constants.CHANNEL_MOD_ALL or ["mod_name",]}'
 CHANNEL_MOD_MAP = json.loads(os.environ.get("CHANNEL_MOD_MAP", "{}"))

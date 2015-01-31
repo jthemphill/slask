@@ -4,7 +4,7 @@ wordkeeper> !challenge @player1 @player2
 slaskbot> @player1 @player2: type !ready when here
 player1> !ready
 player2> !ready
-slaskbot> (@wordkeeper) Starting countdown...
+slaskbot> (wordkeeper) Starting countdown...
 slaskbot> 3
 slaskbot> 2
 slaskbot> 1
@@ -21,13 +21,11 @@ from models.contact import Challenge
 
 
 # Number of seconds we wait for someone to be ready
-TIMEOUT = 120
+TIMEOUT = 30
 
 
 def on_message(msg, server):
     channel = server["channel"]
-    if channel not in config.CONTACT_CHANNELS:
-        return
 
     with Challenge.lock(channel) as challenge:
         if re.search(r"!contactreset", msg.get("text", "")):
@@ -96,6 +94,6 @@ def tick(challenge):
 
     state = challenge.tick()
     if state != 0:
-        return "%d..." % state
+        return "%d..." % (state)
     else:
         return "go!"
